@@ -60,9 +60,9 @@ while ( True ):
 				teamBid = teamId
 				
 			if teamId == teamAid:
-				teamA[ playerId ] = (0, 0)
+				teamA[ playerId ] = (0.0, 0.0)
 			elif teamId == teamBid:
-				teamB[ playerId ] = ( 0, 0)
+				teamB[ playerId ] = (0.0, 0.0)
 
 
 	if gameId != currentGameId :
@@ -71,10 +71,10 @@ while ( True ):
 		
 		lines = [];
 		for player in teamA:
-			line = currentGameId + '\t' + player + '\t' + str(teamA[player][0]) + '\t' + str(teamA[player][1]) + '\n'
+			line = currentGameId + '\t' + player + '\t' + str(teamA[player][0]/100.0) + '\t' + str(teamA[player][1]/100.0) + '\n'
 			lines.append( line ) 
 		for player in teamB:
-			line = currentGameId + '\t' + player + '\t' + str(teamB[player][0]) + '\t' + str(teamB[player][1]) + '\n'
+			line = currentGameId + '\t' + player + '\t' + str(teamB[player][0]/100.0) + '\t' + str(teamB[player][1]/100.0) + '\n'
 			lines.append( line ) 
 		writeToFile ( lines )
 		
