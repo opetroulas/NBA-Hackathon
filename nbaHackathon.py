@@ -24,10 +24,12 @@ for name, group in groupedPlays:
 	for index, row in startingLineup.iterrows():
 		teamId = row["Team_id"]
 		playerId = row["Person_id"]
-		#print onCourt
 		onCourt.setdefault(teamId, []).append(playerId)
+		# As substitutions happen, need to update onCourt for each team
+
 	gameRoster = byPeriod.get_group(0)
 	activePlayers = gameRoster[gameRoster['status'] == 'A']
+
 	for index, row in activePlayers.iterrows():
 		teamId = row["Team_id"]
 		playerId = row["Person_id"]
@@ -37,6 +39,35 @@ for name, group in groupedPlays:
 			"offense": 0.0,
 			"defense": 0.0,
 		}
+	for index, row in sortedPlays.iterrows():
+		eventType = row["Event_Msg_Type"]
+		player1 = row["Person1"]
+		player2 = row["Person2"]
+		teamId = row["Team_id"]
+		period = row["Period"]
+		if eventType == EventTypes.startPeriod:
+			if period > 1:
+				onCourt = defaultdict(list)
+				periodLineup = byPeriod.get_group( period )
+				for index, row in periodLineup.iterrows():
+					teamId = row["Team_id"]
+					playerId = row["Person_id"]
+					onCourt.setdefault(teamId, []).append(playerId)
+
+		if eventType == EventTypes.substitution:
+			
+			if player1 not in onCourt[teamId]:
+				print "player not in game"
+				
+			else:
+				#print onCourt[teamId]
+				#print player1, player2
+				onCourt[teamId].remove( player1 )
+				onCourt[teamId].append( player2 )
+				print "made sub"
+			
+
+	### Todo at the start of a new period set the lineup again? 
 
 	#print playerStats
 	if name == "006728e4c10e957011e1f24878e6054a":
