@@ -3,6 +3,7 @@ from enum import IntEnum
 from hackathonEnums import EventTypes, boxScoreIndexes, lineupIndexes
 import pandas as pd
 import numpy as np
+from collections import defaultdict
 
 playByPlay = pd.read_csv("playByPlay.csv")
 lineups = pd.read_csv("gameLineup.csv")
@@ -17,8 +18,19 @@ for name, group in groupedPlays:
 
 	byPeriod = lineup.groupby("Period")
 	startingLineup = byPeriod.get_group(1)
+	onCourt = defaultdict(list)
+
+	print startingLineup
+	for index, row in startingLineup.iterrows():
+		teamId = row["Team_id"]
+		playerId = row["Person_id"]
+		print onCourt
+		onCourt.setdefault(teamId, []).append(playerId)
 	gameRoster = byPeriod.get_group(0)
-	
-	# print startingLineup
+	print onCourt
 	activePlayers = gameRoster[gameRoster['status'] == 'A']
+	#print activePlayers
+
+	if name == "006728e4c10e957011e1f24878e6054a":
+		break;
 	
