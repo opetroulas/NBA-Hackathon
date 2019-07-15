@@ -19,18 +19,26 @@ for name, group in groupedPlays:
 	byPeriod = lineup.groupby("Period")
 	startingLineup = byPeriod.get_group(1)
 	onCourt = defaultdict(list)
-
-	print startingLineup
+	playerStats = {}
+	#print startingLineup
 	for index, row in startingLineup.iterrows():
 		teamId = row["Team_id"]
 		playerId = row["Person_id"]
-		print onCourt
+		#print onCourt
 		onCourt.setdefault(teamId, []).append(playerId)
 	gameRoster = byPeriod.get_group(0)
-	print onCourt
 	activePlayers = gameRoster[gameRoster['status'] == 'A']
-	#print activePlayers
+	for index, row in activePlayers.iterrows():
+		teamId = row["Team_id"]
+		playerId = row["Person_id"]
+		playerStats[ playerId ] = {
+			"teamId": teamId,
+			"possesions": 0.0,
+			"offense": 0.0,
+			"defense": 0.0,
+		}
 
+	#print playerStats
 	if name == "006728e4c10e957011e1f24878e6054a":
 		break;
 	
