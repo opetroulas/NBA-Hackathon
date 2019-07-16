@@ -15,7 +15,6 @@ groupedLineups = lineups.groupby("Game_id")
 for name, group in groupedPlays:
 	sortedPlays = group.sort_values(["Period", "PC_Time", "WC_Time", "Event_Num"], ascending=[True, False, True, True])
 	lineup = groupedLineups.get_group(name)
-
 	byPeriod = lineup.groupby("Period")
 	startingLineup = byPeriod.get_group(1)
 	onCourt = defaultdict(list)
@@ -41,10 +40,12 @@ for name, group in groupedPlays:
 		}
 	for index, row in sortedPlays.iterrows():
 		eventType = row["Event_Msg_Type"]
+		eventNum = row["Event_Num"]
 		player1 = row["Person1"]
 		player2 = row["Person2"]
 		teamId = row["Team_id"]
 		period = row["Period"]
+		
 		if eventType == EventTypes.startPeriod:
 			if period > 1:
 				onCourt = defaultdict(list)
@@ -56,15 +57,24 @@ for name, group in groupedPlays:
 
 		if eventType == EventTypes.substitution:
 			
-			if player1 not in onCourt[teamId]:
-				print "player not in game"
+			for lineup in onCourt.values():
+				if player1 not in lineup:
+					print "player not in this lineup"
+				else:
+					print lineup
+					lineup.remove(player1)
+					lineup.append(player2)
+					print "made sub"
+					print lineup
+			# if player1 not in onCourt[teamId]:
+			# 	print "player not in game"
 				
-			else:
-				#print onCourt[teamId]
-				#print player1, player2
-				onCourt[teamId].remove( player1 )
-				onCourt[teamId].append( player2 )
-				print "made sub"
+			# else:
+			# 	#print onCourt[teamId]
+			# 	#print player1, player2
+			# 	onCourt[teamId].remove( player1 )
+			# 	onCourt[teamId].append( player2 )
+			# 	print "made sub"
 			
 
 	### Todo at the start of a new period set the lineup again? 
